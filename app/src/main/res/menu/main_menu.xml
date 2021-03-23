@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_refresh"
+        android:orderInCategory="1"
+        android:title="Обновить"
+        android:icon="@drawable/icon_refresh"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_home"
+        android:orderInCategory="2"
+        android:title="Главная"
+        android:icon="@drawable/icon_home"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="3"
+        android:title="Вход"
+        android:icon="@drawable/icon_auth"
+        app:showAsAction="always" />
+
+</menu>

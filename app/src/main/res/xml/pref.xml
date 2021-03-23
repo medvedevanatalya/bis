@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+<!--              android:summary="(например: http://brooke.cherrynet.kz:8787)"-->
+<!--        android:defaultValue="http://brooke.cherrynet.kz:8787"-->
+<!--    android:summary="(например: http://45.13.18.46:8787/brooke/)"-->
+<!--    android:defaultValue="http://45.13.18.46:8787/brooke/"-->
+    <EditTextPreference
+        android:key="uri"
+        android:id="@+id/uri"
+        android:summary="(например: http://brooke.cherrynet.kz:8787)"
+        android:defaultValue="http://brooke.cherrynet.kz:8787"
+        android:title="HTTP адрес сервера" />
+
+    <EditTextPreference
+        android:key="username"
+        android:id="@+id/username"
+        android:title="Имя пользователя"
+        android:summary="" />
+
+    <EditTextPreference
+        android:key="password"
+        android:id="@+id/password"
+        android:inputType="textPassword"
+        android:title="Пароль"
+        android:summary="" />
+
+</PreferenceScreen>

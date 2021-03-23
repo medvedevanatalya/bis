@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="@drawable/background3"
+    >
+
+    <RelativeLayout
+        android:id="@+id/relative1"
+        android:layout_width="match_parent"
+        android:layout_height="27dp">
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/lblName"-->
+        <!--            android:layout_width="304dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_alignParentLeft="true"-->
+        <!--            android:layout_alignParentBottom="true"-->
+        <!--            android:layout_marginLeft="10dp"-->
+        <!--            android:layout_marginRight="9dp"-->
+        <!--            android:layout_marginBottom="13dp"-->
+        <!--            android:layout_toLeftOf="@+id/btnLogout"-->
+        <!--            android:text=""-->
+        <!--            android:layout_alignParentStart="true"-->
+        <!--            android:layout_marginStart="10dp"-->
+        <!--            android:layout_marginEnd="9dp"-->
+        <!--            android:layout_toStartOf="@+id/btnLogout" />-->
+        <!--        <Button-->
+        <!--            android:id="@+id/btnLogout"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_alignParentRight="true"-->
+        <!--            android:text="Выйти"-->
+        <!--            android:layout_alignParentEnd="true" />-->
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="700dp"
+        tools:ignore="MissingConstraints"
+        android:id="@+id/relative2"
+        android:layout_below="@id/relative1">
+
+        <WebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="682dp"
+            tools:layout_editor_absoluteX="352dp"
+            tools:layout_editor_absoluteY="712dp" />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/login_url"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="" />
+    </RelativeLayout>
+
+</RelativeLayout>
