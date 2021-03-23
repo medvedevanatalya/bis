@@ -691,8 +691,9 @@ public class MainActivity extends AppCompatActivity
                         .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                                String apkUrl = "https://github.com/jehy/rutracker-free/releases/download/" +
-                                        lastAppVersion + "/app-release.apk";
+//                                String apkUrl = "https://github.com/jehy/rutracker-free/releases/download/" +
+                                        String apkUrl = "https://medvedevanatalya/bis/releases/download/" +
+                                        lastAppVersion + "/app-debug.apk";
                                 //intent.setDataAndType(Uri.parse(apkUrl), "application/vnd.android.package-archive");
                                 intent.setData(Uri.parse(apkUrl));
 

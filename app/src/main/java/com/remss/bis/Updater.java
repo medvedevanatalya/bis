@@ -23,7 +23,8 @@ class Updater extends AsyncTask<MainActivity, Void, Void>
         {
             // Create a URL for the desired page
             // Создайте URL-адрес желаемой страницы
-            URL url = new URL("https://raw.githubusercontent.com/jehy/rutracker-free/master/app/build.gradle");
+//            URL url = new URL("https://raw.githubusercontent.com/jehy/rutracker-free/master/app/build.gradle");
+            URL url = new URL("https://raw.githubusercontent.com/medvedevanatalya/bis/main/app/build.gradle");
 
             // Read all the text returned by the server
             // Читаем весь текст, возвращаемый сервером
