@@ -66,7 +66,7 @@ class Updater extends AsyncTask<MainActivity, Void, Void>
         String li = SettingsManager.get(activity, "LastIgnoredUpdateVersion");
         if (li != null)
         {
-            int liInt = Integer.parseInt(li);
+            Integer liInt = Integer.parseInt(li);
             if (liInt >= lastAppVersion)
                 return;
         }
