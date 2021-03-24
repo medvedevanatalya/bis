@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Brooke</string>
+    <string name="update_app_url">Brooke</string>
+    <string name="notification_description">Brooke</string>
 </resources>

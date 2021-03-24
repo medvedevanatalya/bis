@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.DownloadManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -108,27 +109,71 @@ public class MainActivity extends AppCompatActivity
 
 
         // установка обновления
-        button_Install = (Button) findViewById(R.id.button_Install);
-        button_Install.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                File toInstall = new File((Environment.getExternalStorageDirectory() +"/Download/"), "app-debug.apk");
-                Intent intent;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    Uri apkUri = FileProvider.getUriForFile(MainActivity.this, BuildConfig.APPLICATION_ID + ".fileprovider", toInstall);
-                    intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
-                    intent.setData(apkUri);
-                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                } else {
-                    Uri apkUri = Uri.fromFile(toInstall);
-                    intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                }
-                MainActivity.this.startActivity(intent);
-
-            }
-        });
+//        button_Install = (Button) findViewById(R.id.button_Install);
+//        button_Install.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                //get destination to update file and set Uri
+//                //TODO: First I wanted to store my update .apk file on internal storage for my app but apparently android does not allow you to open and install
+//                //aplication with existing package from there. So for me, alternative solution is Download directory in external storage. If there is better
+//                //solution, please inform us in comment
+//                // получаем место назначения для обновления файла и устанавливаем Uri
+//                // TODO: сначала я хотел сохранить файл .apk с обновлением во внутреннем хранилище для моего приложения, но, по-видимому, Android не позволяет открывать и устанавливать
+//                // приложение с существующим пакетом оттуда. Поэтому для меня альтернативным решением является каталог загрузки во внешнем хранилище. Если есть лучше
+//                // решение, сообщите нам в комментарии
+//                String destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/";
+//                String fileName = "app-debug.apk";
+//                destination += fileName;
+//                final Uri uri = Uri.parse("file://" + destination);
+//
+//                //Delete update file if exists
+//                // Удалить файл обновления, если он существует
+//                File file = new File(destination);
+//                if (file.exists())
+//                    //file.delete() - test this, I think sometimes it doesnt work
+//                    file.delete();
+//
+//                //get url of app on server
+//                // получить URL-адрес приложения на сервере
+//                String url = MainActivity.this.getString(R.string.update_app_url);
+//                String url = "https://github.com/medvedevanatalya/bis/releases/download/" +
+//                        lastAppVersion + "/app-debug.apk";
+////
+////                //set downloadmanager
+////                // установить менеджер загрузок
+//                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+////                request.setDescription(MainActivity.this.getString(R.string.notification_description));
+//                request.setTitle(MainActivity.this.getString(R.string.app_name));
+////
+////                //set destination
+////                // установить пункт назначения
+//                request.setDestinationUri(uri);
+////
+////                // get download service and enqueue file
+////                // получить службу загрузки и поставить файл в очередь
+//                final DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+//                final long downloadId = manager.enqueue(request);
+//
+//                //set BroadcastReceiver to install app when .apk is downloaded
+//                // установите BroadcastReceiver для установки приложения при загрузке .apk
+//                BroadcastReceiver onComplete = new BroadcastReceiver() {
+//                    public void onReceive(Context ctxt, Intent intent) {
+//                        Intent install = new Intent(Intent.ACTION_VIEW);
+//                        install.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                        install.setDataAndType(uri,
+//                                manager.getMimeTypeForDownloadedFile(downloadId));
+//                        startActivity(install);
+//
+//                        unregisterReceiver(this);
+//                        finish();
+//                    }
+//                };
+//                //register receiver for when .apk download is compete
+//                // зарегистрируйте получателя, когда загрузка .apk будет завершена
+//                registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+//
+//            }
+//        });
 
 
 //        Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.logo);// set drawable icon
@@ -184,7 +229,11 @@ public class MainActivity extends AppCompatActivity
         loadWebView();
 
         // вызов проверки на новую версию
+//        Updater updApp = new Updater();
+//        updApp.setContext(getApplicationContext());
+//        updApp.execute(this);
         new Updater().execute(this);
+
 
 //        // вызов установщика
 //        Intent promptInstall = new Intent(Intent.ACTION_VIEW)
@@ -691,11 +740,6 @@ public class MainActivity extends AppCompatActivity
                 alert.show();
             }
         });
-
-//        Intent newIntent = new Intent(Intent.ACTION_VIEW);
-//        newIntent.setDataAndType(Uri.fromFile("Download/app-debug.apk"),"application/vnd.android.package-archive");
-//        newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
 
     }
 }
