@@ -11,13 +11,14 @@ class Updater extends AsyncTask<MainActivity, Void, Void>
 {
     private Exception exception;
 
+    @Override
     protected Void doInBackground(MainActivity... activity)
     {
         checkUpdates(activity[0]);
         return null;
     }
 
-    Integer getLastAppVersion()
+    Double getLastAppVersion()
     {
         try
         {
@@ -29,14 +30,20 @@ class Updater extends AsyncTask<MainActivity, Void, Void>
             // Read all the text returned by the server
             // Читаем весь текст, возвращаемый сервером
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+
             String str;
+            double lastVersion;
+
             while ((str = in.readLine()) != null)
             {
                 int f = str.indexOf("releaseVersionCode");
-                if (f != -1) {
+                if (f != -1)
+                {
                     str = str.substring(f + ("releaseVersionCode").length()).trim();
                     Log.d("Brooke", "Последняя версия приложения: " + str);
-                    return Integer.parseInt(str);
+                    lastVersion = Double.parseDouble(str);
+//                    return Integer.parseInt(str);
+                    return lastVersion;
                 }
             }
             in.close();
@@ -52,7 +59,8 @@ class Updater extends AsyncTask<MainActivity, Void, Void>
 
     void checkUpdates(final MainActivity activity)
     {
-        final Integer lastAppVersion = getLastAppVersion();
+//        final Integer lastAppVersion = getLastAppVersion();
+        final Double lastAppVersion = getLastAppVersion();
         if (lastAppVersion == null)
         {
             return;

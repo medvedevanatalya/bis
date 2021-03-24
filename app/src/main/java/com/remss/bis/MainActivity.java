@@ -74,15 +74,6 @@ import static com.remss.bis.ReceiverTimer.CHANNEL_ID;
 
 public class MainActivity extends AppCompatActivity
 {
-    // ПЕРЕМЕННЫЕ ДЛЯ РАБОТЫ С СЕССИЯМИ
-    // Alert Dialog Manager
-    AlertDialogManager alert = new AlertDialogManager();
-    // Session Manager Class
-    SessionManager session;
-    // Button Logout
-    Button btnLogout;
-    //
-
     WebView myWebView;
     WebAppInterface mWebAppInterface;
 
@@ -110,8 +101,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
 
-        // вызов проверки на новую версию
-        new Updater().execute(this);
 
 
 //        Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.logo);// set drawable icon
@@ -119,11 +108,6 @@ public class MainActivity extends AppCompatActivity
         ActionBar actionBarLogo = getSupportActionBar();
         actionBarLogo.setHomeAsUpIndicator(R.drawable.logo1);
         actionBarLogo.setDisplayHomeAsUpEnabled(true);
-
-        // кнопка назад
-//        ActionBar actionBarBack = getSupportActionBar();
-//        actionBarBack.setHomeButtonEnabled(true);
-//        actionBarBack.setDisplayHomeAsUpEnabled(true);
 
 
         androidID = Settings.System.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -169,49 +153,10 @@ public class MainActivity extends AppCompatActivity
         myWebView.clearHistory();
         myWebView.clearCache(true);
 
-
-
-//        // РАБОТА С СЕСИЯМИ
-//        // Session class instance
-//        session = new SessionManager(getApplicationContext());
-//        TextView lblName = (TextView) findViewById(R.id.lblName);
-////        TextView lblEmail = (TextView) findViewById(R.id.lblEmail);
-//        // Button logout
-//        btnLogout = (Button) findViewById(R.id.btnLogout);
-//        Toast.makeText(getApplicationContext(), "Статус входа пользователя: " + session.isLoggedIn(), Toast.LENGTH_LONG).show();
-//        /**
-//         * Call this function whenever you want to check user login
-//         * This will redirect user to LoginActivity is he is not
-//         * logged in
-//         * */
-//        session.checkLogin();
-//        // get user data from session
-//        HashMap<String, String> user = session.getUserDetails();
-//        // name
-//        String name = user.get(SessionManager.KEY_NAME);
-//        // email
-////        String email = user.get(SessionManager.KEY_EMAIL);
-//        // displaying user data
-//        lblName.setText(Html.fromHtml("Добро пожаловать, <b>" + name + "</b>"));
-////        lblEmail.setText(Html.fromHtml("Email: <b>" + email + "</b>"));
-//        /**
-//         * Logout button click event
-//         * */
-//        btnLogout.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View arg0) {
-//                // Clear the session data
-//                // This will clear all session data and
-//                // redirect user to LoginActivity
-//                session.logoutUser();
-//            }
-//        });
-//        //
-
-
-
         loadWebView();
+
+        // вызов проверки на новую версию
+        new Updater().execute(this);
 
         createNotificationChannel();
         setAlarm(this);
@@ -675,7 +620,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public void Update(final Integer lastAppVersion)
+    public void Update(final Double lastAppVersion)
     {
         runOnUiThread(new Runnable()
         {

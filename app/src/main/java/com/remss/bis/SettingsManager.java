@@ -29,6 +29,6 @@ public class SettingsManager {
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(key, value);
         Log.d("SettingsManager", "Saved setting " + key + " equal to " + value);
-        editor.commit();
+        editor.apply();
     }
 }
