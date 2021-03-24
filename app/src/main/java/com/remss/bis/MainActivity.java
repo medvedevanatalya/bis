@@ -20,6 +20,7 @@ import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.text.Html;
@@ -48,6 +49,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.android.volley.Request;
@@ -60,6 +62,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -657,5 +660,26 @@ public class MainActivity extends AppCompatActivity
                 alert.show();
             }
         });
+
+
+        File directory = Environment.getExternalStoragePublicDirectory("Download");
+
+        File file = new File(directory, "app-debug.apk"); // assume refers to "sdcard/myapp_folder/myapp.apk"
+
+        Uri fileUri = Uri.fromFile(file); //for Build.VERSION.SDK_INT <= 24
+
+        if (Build.VERSION.SDK_INT >= 24)
+        {
+            fileUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", file);
+        }
+        Intent intent = new Intent(Intent.ACTION_VIEW, fileUri);
+        intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
+        intent.setDataAndType(fileUri, "application/vnd.android.package-archive");
+        intent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //dont forget add this line
+        startActivity(intent);
     }
 }
+
+
+
