@@ -29,13 +29,13 @@
         <!--            android:layout_marginStart="10dp"-->
         <!--            android:layout_marginEnd="9dp"-->
         <!--            android:layout_toStartOf="@+id/btnLogout" />-->
-        <!--        <Button-->
-        <!--            android:id="@+id/btnLogout"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_alignParentRight="true"-->
-        <!--            android:text="Выйти"-->
-        <!--            android:layout_alignParentEnd="true" />-->
+                <Button
+                    android:id="@+id/button_Install"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="Установить обновление"
+                    android:layout_alignParentEnd="true" />
 
     </RelativeLayout>
 

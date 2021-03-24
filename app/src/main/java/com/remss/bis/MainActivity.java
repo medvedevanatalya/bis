@@ -93,7 +93,10 @@ public class MainActivity extends AppCompatActivity
     public static String androidID = "";
     public static String manufacturer_model = "";
 
+    Button button_Install;
+
     TextView text_login_url;
+
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @SuppressLint({"SetTextI18n", "HardwareIds", "NewApi", "LocalSuppress", "SetJavaScriptEnabled", "AddJavascriptInterface"})
@@ -104,6 +107,28 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
 
+        // установка обновления
+        button_Install = (Button) findViewById(R.id.button_Install);
+        button_Install.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                File toInstall = new File((Environment.getExternalStorageDirectory() +"/Download/"), "app-debug.apk");
+                Intent intent;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    Uri apkUri = FileProvider.getUriForFile(MainActivity.this, BuildConfig.APPLICATION_ID + ".fileprovider", toInstall);
+                    intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+                    intent.setData(apkUri);
+                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                } else {
+                    Uri apkUri = Uri.fromFile(toInstall);
+                    intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                }
+                MainActivity.this.startActivity(intent);
+
+            }
+        });
 
 
 //        Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.logo);// set drawable icon
@@ -161,11 +186,11 @@ public class MainActivity extends AppCompatActivity
         // вызов проверки на новую версию
         new Updater().execute(this);
 
-        // вызов установщика
-        Intent promptInstall = new Intent(Intent.ACTION_VIEW)
-                .setData(Uri.parse("file:///Download/app-debug.apk"))
-                .setType("application/vnd.android.package-archive");
-        startActivity(promptInstall);
+//        // вызов установщика
+//        Intent promptInstall = new Intent(Intent.ACTION_VIEW)
+//                .setData(Uri.parse("file:///Download/app-debug.apk"))
+//                .setType("application/vnd.android.package-archive");
+//        startActivity(promptInstall);
 
         createNotificationChannel();
         setAlarm(this);
