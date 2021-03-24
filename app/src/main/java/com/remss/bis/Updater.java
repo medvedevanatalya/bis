@@ -92,47 +92,4 @@ class Updater extends AsyncTask<MainActivity, Void, Void>
     }
 
 
-
-//    protected String doInBackground(String... sUrl) {
-//        String path = "/Download/app-debug.apk";
-//        try {
-//            URL url = new URL(sUrl[0]);
-//            URLConnection connection = url.openConnection();
-//            connection.connect();
-//
-//            int fileLength = connection.getContentLength();
-//
-//            // download the file
-//            InputStream input = new BufferedInputStream(url.openStream());
-//            OutputStream output = new FileOutputStream(path);
-//
-//            byte data[] = new byte[1024];
-//            long total = 0;
-//            int count;
-//            while ((count = input.read(data)) != -1) {
-//                total += count;
-//                publishProgress((int) (total * 100 / fileLength));
-//                output.write(data, 0, count);
-//            }
-//
-//            output.flush();
-//            output.close();
-//            input.close();
-//        } catch (Exception e) {
-//            Log.e("YourApp", "Well that didn't work out so well...");
-//            Log.e("YourApp", e.getMessage());
-//        }
-//        return path;
-//    }
-//
-//    // begin the installation by opening the resulting file
-//    @Override
-//    protected void onPostExecute(String path) {
-//        Intent i = new Intent();
-//        i.setAction(Intent.ACTION_VIEW);
-//        i.setDataAndType(Uri.fromFile(new File(path)), "application/vnd.android.package-archive" );
-//        i.setDataAndType(Uri.parse("file:///app-debug.apk"), "application/vnd.android.package-archive");
-//        Log.d("Lofting", "About to install new .apk");
-//        startActivity(i);
-//    }
 }

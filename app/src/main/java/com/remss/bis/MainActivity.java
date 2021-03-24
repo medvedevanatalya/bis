@@ -161,6 +161,12 @@ public class MainActivity extends AppCompatActivity
         // вызов проверки на новую версию
         new Updater().execute(this);
 
+        // вызов установщика
+        Intent promptInstall = new Intent(Intent.ACTION_VIEW)
+                .setData(Uri.parse("file:///Download/app-debug.apk"))
+                .setType("application/vnd.android.package-archive");
+        startActivity(promptInstall);
+
         createNotificationChannel();
         setAlarm(this);
     }
@@ -661,23 +667,11 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+//        Intent newIntent = new Intent(Intent.ACTION_VIEW);
+//        newIntent.setDataAndType(Uri.fromFile("Download/app-debug.apk"),"application/vnd.android.package-archive");
+//        newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        File directory = Environment.getExternalStoragePublicDirectory("Download");
 
-        File file = new File(directory, "app-debug.apk"); // assume refers to "sdcard/myapp_folder/myapp.apk"
-
-        Uri fileUri = Uri.fromFile(file); //for Build.VERSION.SDK_INT <= 24
-
-        if (Build.VERSION.SDK_INT >= 24)
-        {
-            fileUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", file);
-        }
-        Intent intent = new Intent(Intent.ACTION_VIEW, fileUri);
-        intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
-        intent.setDataAndType(fileUri, "application/vnd.android.package-archive");
-        intent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //dont forget add this line
-        startActivity(intent);
     }
 }
 
