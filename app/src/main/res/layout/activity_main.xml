@@ -12,7 +12,7 @@
     <RelativeLayout
         android:id="@+id/relative1"
         android:layout_width="match_parent"
-        android:layout_height="45dp">
+        android:layout_height="30dp">
 
         <!--        <TextView-->
         <!--            android:id="@+id/lblName"-->
@@ -29,13 +29,13 @@
         <!--            android:layout_marginStart="10dp"-->
         <!--            android:layout_marginEnd="9dp"-->
         <!--            android:layout_toStartOf="@+id/btnLogout" />-->
-        <Button
-            android:id="@+id/button_Install"
-            android:layout_width="275dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:text="Установить обновление" />
+<!--        <Button-->
+<!--            android:id="@+id/button_Install"-->
+<!--            android:layout_width="275dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_alignParentEnd="true"-->
+<!--            android:layout_alignParentRight="true"-->
+<!--            android:text="Установить обновление" />-->
 
     </RelativeLayout>
 

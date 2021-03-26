@@ -21,11 +21,6 @@ class Updater extends AsyncTask<MainActivity, Void, Void>
 {
     private Exception exception;
 
-//    private Context context;
-//    public void setContext(Context contextf){
-//        context = contextf;
-//    }
-
     @Override
     protected Void doInBackground(MainActivity... activity)
     {
@@ -33,14 +28,12 @@ class Updater extends AsyncTask<MainActivity, Void, Void>
         return null;
     }
 
-    @SuppressLint("SdCardPath")
     Double getLastAppVersion()
     {
         try
         {
             // Create a URL for the desired page
             // Создайте URL-адрес желаемой страницы
-//            URL url = new URL("https://raw.githubusercontent.com/jehy/rutracker-free/master/app/build.gradle");
             URL url = new URL("https://raw.githubusercontent.com/medvedevanatalya/bis/main/app/build.gradle");
 
             // Read all the text returned by the server
@@ -58,17 +51,11 @@ class Updater extends AsyncTask<MainActivity, Void, Void>
                     str = str.substring(f + ("releaseVersionCode").length()).trim();
                     Log.d("Brooke", "Последняя версия приложения: " + str);
                     lastVersion = Double.parseDouble(str);
-//                    return Integer.parseInt(str);
                     return lastVersion;
                 }
             }
             in.close();
             Log.d("Brooke", "Не удалось получить последнюю версию приложения!");
-
-//            Intent intent = new Intent(Intent.ACTION_VIEW);
-//            intent.setDataAndType(Uri.fromFile(new File("/Download/app-debug.apk")), "application/vnd.android.package-archive");
-//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // without this flag android returned a intent error!
-//            context.startActivity(intent);
         }
         catch (Exception e)
         {
@@ -80,13 +67,12 @@ class Updater extends AsyncTask<MainActivity, Void, Void>
 
     void checkUpdates(final MainActivity activity)
     {
-//        final Integer lastAppVersion = getLastAppVersion();
         final Double lastAppVersion = getLastAppVersion();
         if (lastAppVersion == null)
         {
             return;
         }
-        if (lastAppVersion <= BuildConfig.VERSION_CODE)
+        if (lastAppVersion <= Double.parseDouble(BuildConfig.VERSION_NAME))
         {
             Log.d("Brooke", "Версия приложения актуальна, обновление не требуется ");
             return;
@@ -95,7 +81,6 @@ class Updater extends AsyncTask<MainActivity, Void, Void>
         String li = SettingsManager.get(activity, "LastIgnoredUpdateVersion");
         if (li != null)
         {
-//            Integer liInt = Integer.parseInt(li);
             Double liInt = Double.parseDouble(li);
             if (liInt >= lastAppVersion)
                 return;
@@ -103,5 +88,4 @@ class Updater extends AsyncTask<MainActivity, Void, Void>
 
         activity.Update(lastAppVersion);
     }
-
 }

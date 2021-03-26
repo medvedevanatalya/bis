@@ -94,8 +94,6 @@ public class MainActivity extends AppCompatActivity
     public static String androidID = "";
     public static String manufacturer_model = "";
 
-    Button button_Install;
-
     TextView text_login_url;
 
 
@@ -106,74 +104,6 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-        // установка обновления
-//        button_Install = (Button) findViewById(R.id.button_Install);
-//        button_Install.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                //get destination to update file and set Uri
-//                //TODO: First I wanted to store my update .apk file on internal storage for my app but apparently android does not allow you to open and install
-//                //aplication with existing package from there. So for me, alternative solution is Download directory in external storage. If there is better
-//                //solution, please inform us in comment
-//                // получаем место назначения для обновления файла и устанавливаем Uri
-//                // TODO: сначала я хотел сохранить файл .apk с обновлением во внутреннем хранилище для моего приложения, но, по-видимому, Android не позволяет открывать и устанавливать
-//                // приложение с существующим пакетом оттуда. Поэтому для меня альтернативным решением является каталог загрузки во внешнем хранилище. Если есть лучше
-//                // решение, сообщите нам в комментарии
-//                String destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/";
-//                String fileName = "app-debug.apk";
-//                destination += fileName;
-//                final Uri uri = Uri.parse("file://" + destination);
-//
-//                //Delete update file if exists
-//                // Удалить файл обновления, если он существует
-//                File file = new File(destination);
-//                if (file.exists())
-//                    //file.delete() - test this, I think sometimes it doesnt work
-//                    file.delete();
-//
-//                //get url of app on server
-//                // получить URL-адрес приложения на сервере
-//                String url = MainActivity.this.getString(R.string.update_app_url);
-//                String url = "https://github.com/medvedevanatalya/bis/releases/download/" +
-//                        lastAppVersion + "/app-debug.apk";
-////
-////                //set downloadmanager
-////                // установить менеджер загрузок
-//                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-////                request.setDescription(MainActivity.this.getString(R.string.notification_description));
-//                request.setTitle(MainActivity.this.getString(R.string.app_name));
-////
-////                //set destination
-////                // установить пункт назначения
-//                request.setDestinationUri(uri);
-////
-////                // get download service and enqueue file
-////                // получить службу загрузки и поставить файл в очередь
-//                final DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-//                final long downloadId = manager.enqueue(request);
-//
-//                //set BroadcastReceiver to install app when .apk is downloaded
-//                // установите BroadcastReceiver для установки приложения при загрузке .apk
-//                BroadcastReceiver onComplete = new BroadcastReceiver() {
-//                    public void onReceive(Context ctxt, Intent intent) {
-//                        Intent install = new Intent(Intent.ACTION_VIEW);
-//                        install.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                        install.setDataAndType(uri,
-//                                manager.getMimeTypeForDownloadedFile(downloadId));
-//                        startActivity(install);
-//
-//                        unregisterReceiver(this);
-//                        finish();
-//                    }
-//                };
-//                //register receiver for when .apk download is compete
-//                // зарегистрируйте получателя, когда загрузка .apk будет завершена
-//                registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-//
-//            }
-//        });
 
 
 //        Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.logo);// set drawable icon
@@ -226,20 +156,10 @@ public class MainActivity extends AppCompatActivity
         myWebView.clearHistory();
         myWebView.clearCache(true);
 
+
         loadWebView();
 
-        // вызов проверки на новую версию
-//        Updater updApp = new Updater();
-//        updApp.setContext(getApplicationContext());
-//        updApp.execute(this);
         new Updater().execute(this);
-
-
-//        // вызов установщика
-//        Intent promptInstall = new Intent(Intent.ACTION_VIEW)
-//                .setData(Uri.parse("file:///Download/app-debug.apk"))
-//                .setType("application/vnd.android.package-archive");
-//        startActivity(promptInstall);
 
         createNotificationChannel();
         setAlarm(this);
@@ -372,11 +292,6 @@ public class MainActivity extends AppCompatActivity
                 Log.d("TAG", "URL MyWebView: " + myWebView.getUrl());
                 myWebView.reload();
                 return true;
-
-                // реализация работы кнопки назад
-//            case android.R.id.home:
-//                this.finish();
-//                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -566,13 +481,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    // смена ориентации
-    @JavascriptInterface
-    public void setorientation(){
-
-        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-    }
-
     // реализация класса который контролирует переход по ссылкам
     private class MyWebViewClient extends WebViewClient
     {
@@ -703,6 +611,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    // на обновление приложения
     public void Update(final Double lastAppVersion)
     {
         runOnUiThread(new Runnable()
@@ -719,7 +628,6 @@ public class MainActivity extends AppCompatActivity
                         .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 Intent intent = new Intent(Intent.ACTION_VIEW);
-//                                String apkUrl = "https://github.com/jehy/rutracker-free/releases/download/" +
                                         String apkUrl = "https://github.com/medvedevanatalya/bis/releases/download/" +
                                         lastAppVersion + "/app-debug.apk";
                                 //intent.setDataAndType(Uri.parse(apkUrl), "application/vnd.android.package-archive");
