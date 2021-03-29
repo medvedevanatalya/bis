@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -15,6 +16,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -43,6 +45,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +55,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -80,6 +84,8 @@ public class MainActivity extends AppCompatActivity
 {
     WebView myWebView;
     WebAppInterface mWebAppInterface;
+
+    ProgressBar mProgressBar;
 
     public static SharedPreferences appSettings;
 
@@ -123,17 +129,52 @@ public class MainActivity extends AppCompatActivity
 
         myWebView.getSettings().setUseWideViewPort(true);
         myWebView.getSettings().setLoadWithOverviewMode(true);
+        myWebView.getSettings().setJavaScriptEnabled(true);
 
         if (Build.VERSION.SDK_INT >= 19)
         {
             myWebView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         }
-//        myWebView.getSettings().setPluginState(WebSettings.PluginState.ON);
 
-        myWebView.setWebViewClient(new MyWebViewClient());
+
+        //SwipeRefreshLayout
+        final SwipeRefreshLayout finalMySwipeRefreshLayout1;
+        finalMySwipeRefreshLayout1 = findViewById(R.id.swiperefresh);
+        finalMySwipeRefreshLayout1.setOnRefreshListener( new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // This method performs the actual data-refresh operation.
+                // The method calls setRefreshing(false) when it's finished.
+                myWebView.loadUrl(myWebView.getUrl());
+            }
+        });
+
+        mProgressBar = findViewById(R.id.pb);
+
+        myWebView.setWebViewClient(new MyWebViewClient(){
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                // Visible the progressbar
+                mProgressBar.setVisibility(View.VISIBLE);
+            }
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                finalMySwipeRefreshLayout1.setRefreshing(false);
+                mProgressBar.setVisibility(View.GONE);
+            }
+        });
 
         // MyWebChromeClient в реализации класса можно реагировать на вызов из JS функции ALERT()
-        myWebView.setWebChromeClient(new MyWebChromeClient());
+        myWebView.setWebChromeClient(new MyWebChromeClient(){
+            public void onProgressChanged(WebView view, int newProgress){
+                // Update the progress bar with page loading progress
+                mProgressBar.setProgress(newProgress);
+                if(newProgress == 100){
+                    // Hide the progressbar
+                    mProgressBar.setVisibility(View.GONE);
+                }
+            }
+        });
 
         // прозрачный фон для WebView
         myWebView.setBackgroundColor(Color.TRANSPARENT);
@@ -146,8 +187,6 @@ public class MainActivity extends AppCompatActivity
 
         // установить интерфейс взаимодействия с JavaScript загружаемой web страницы
 //        myWebView.addJavascriptInterface(new WebAppInterface(this),"Android");
-        WebSettings webSettings = myWebView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
         myWebView.addJavascriptInterface(mWebAppInterface,"Android");
 
         myWebView.getSettings().setPluginState(WebSettings.PluginState.ON);
@@ -155,7 +194,6 @@ public class MainActivity extends AppCompatActivity
         myWebView.clearFormData();
         myWebView.clearHistory();
         myWebView.clearCache(true);
-
 
         loadWebView();
 
@@ -507,6 +545,14 @@ public class MainActivity extends AppCompatActivity
 //            return false;
 //        }
 
+
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            // Visible the progressbar
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
+
+
         @SuppressLint("SetJavaScriptEnabled")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url)
@@ -550,11 +596,13 @@ public class MainActivity extends AppCompatActivity
             Log.d("TAG", "onReceivedSslError: SSL error");
             handler.proceed(); // Ignore SSL certificate errors
         }
+
     }
 
     // реализация класса для того чтобы в JS работал Alert()
     private static class MyWebChromeClient extends WebChromeClient
     {
+
         @Override
         public boolean onJsAlert(WebView view, String url, String message, JsResult result)
         {

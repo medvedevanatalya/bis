@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
@@ -9,52 +10,38 @@
     android:background="@drawable/background3"
     >
 
+    <ProgressBar
+        android:id="@+id/pb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:visibility="gone"/>
+
     <RelativeLayout
         android:id="@+id/relative1"
         android:layout_width="match_parent"
-        android:layout_height="30dp">
-
-        <!--        <TextView-->
-        <!--            android:id="@+id/lblName"-->
-        <!--            android:layout_width="304dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_alignParentLeft="true"-->
-        <!--            android:layout_alignParentBottom="true"-->
-        <!--            android:layout_marginLeft="10dp"-->
-        <!--            android:layout_marginRight="9dp"-->
-        <!--            android:layout_marginBottom="13dp"-->
-        <!--            android:layout_toLeftOf="@+id/btnLogout"-->
-        <!--            android:text=""-->
-        <!--            android:layout_alignParentStart="true"-->
-        <!--            android:layout_marginStart="10dp"-->
-        <!--            android:layout_marginEnd="9dp"-->
-        <!--            android:layout_toStartOf="@+id/btnLogout" />-->
-<!--        <Button-->
-<!--            android:id="@+id/button_Install"-->
-<!--            android:layout_width="275dp"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_alignParentEnd="true"-->
-<!--            android:layout_alignParentRight="true"-->
-<!--            android:text="Установить обновление" />-->
-
+        android:layout_height="50dp">
     </RelativeLayout>
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swiperefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="700dp"
         tools:ignore="MissingConstraints"
-        android:id="@+id/relative2"
-        android:layout_below="@id/relative1">
+        android:id="@+id/relative2">
 
         <WebView
             android:id="@+id/webView"
             android:layout_width="match_parent"
-            android:layout_height="682dp"
+            android:layout_height="700dp"
             tools:layout_editor_absoluteX="352dp"
             tools:layout_editor_absoluteY="712dp" />
     </RelativeLayout>
-
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
