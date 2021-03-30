@@ -422,8 +422,8 @@ public class MainActivity extends AppCompatActivity
     {
         Log.d("TAG", "loadWebView: current loaded page: " + curLoadedPage);
 
-//        if( curLoadedPage.isEmpty() || curLoadedPage.equals(uri()) )
-//        {
+        if( curLoadedPage.isEmpty() || curLoadedPage.equals(uri()) )
+        {
             // подготовка параметров для отправки post запроса
             String postParams = "";
             try
@@ -464,11 +464,10 @@ public class MainActivity extends AppCompatActivity
             clearHistory = true;
             // сбрасываем признак отображения внутреннего диалога страницы
             isShowDialog = "false";
-
-//        }
-//        else {
+        }
+        else {
 //            myWebView.reload();
-//        }
+        }
     }
 
 
@@ -545,14 +544,6 @@ public class MainActivity extends AppCompatActivity
 //            return false;
 //        }
 
-
-        @Override
-        public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            // Visible the progressbar
-            mProgressBar.setVisibility(View.VISIBLE);
-        }
-
-
         @SuppressLint("SetJavaScriptEnabled")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url)
@@ -596,13 +587,11 @@ public class MainActivity extends AppCompatActivity
             Log.d("TAG", "onReceivedSslError: SSL error");
             handler.proceed(); // Ignore SSL certificate errors
         }
-
     }
 
     // реализация класса для того чтобы в JS работал Alert()
     private static class MyWebChromeClient extends WebChromeClient
     {
-
         @Override
         public boolean onJsAlert(WebView view, String url, String message, JsResult result)
         {
@@ -659,7 +648,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    // на обновление приложения
+    // на обновление версии приложения
     public void Update(final Double lastAppVersion)
     {
         runOnUiThread(new Runnable()

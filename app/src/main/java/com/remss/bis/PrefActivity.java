@@ -26,7 +26,6 @@ public class PrefActivity extends PreferenceActivity
 
     public static class MyPreferenceFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener
     {
-
         private  SharedPreferences sharedPreferences;
 
         @Override

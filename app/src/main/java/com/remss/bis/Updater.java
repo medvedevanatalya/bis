@@ -59,7 +59,7 @@ class Updater extends AsyncTask<MainActivity, Void, Void>
         }
         catch (Exception e)
         {
-            Log.d("Brooke", "Не удалось получить последнюю версию приложения:");
+            Log.d("Brooke", "Не удалось получить последнюю версию приложения: ");
             e.printStackTrace();
         }
         return null;
@@ -74,7 +74,7 @@ class Updater extends AsyncTask<MainActivity, Void, Void>
         }
         if (lastAppVersion <= Double.parseDouble(BuildConfig.VERSION_NAME))
         {
-            Log.d("Brooke", "Версия приложения актуальна, обновление не требуется ");
+            Log.d("Brooke", "Версия приложения актуальна, обновление не требуется.");
             return;
         }
 
