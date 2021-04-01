@@ -34,7 +34,8 @@ class Updater extends AsyncTask<MainActivity, Void, Void>
         {
             // Create a URL for the desired page
             // Создайте URL-адрес желаемой страницы
-            URL url = new URL("https://raw.githubusercontent.com/medvedevanatalya/bis/main/app/build.gradle");
+//            URL url = new URL("https://raw.githubusercontent.com/medvedevanatalya/bis/main/app/build.gradle");
+            URL url = new URL("http://172.20.1.84:8787/update/releaseVersionCode.txt");
 
             // Read all the text returned by the server
             // Читаем весь текст, возвращаемый сервером

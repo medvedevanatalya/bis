@@ -145,7 +145,8 @@ public class MainActivity extends AppCompatActivity
             public void onRefresh() {
                 // This method performs the actual data-refresh operation.
                 // The method calls setRefreshing(false) when it's finished.
-                myWebView.loadUrl(myWebView.getUrl());
+//                myWebView.loadUrl(myWebView.getUrl());
+                myWebView.reload();
             }
         });
 
@@ -665,8 +666,9 @@ public class MainActivity extends AppCompatActivity
                         .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                                        String apkUrl = "https://github.com/medvedevanatalya/bis/releases/download/" +
-                                        lastAppVersion + "/app-debug.apk";
+//                                        String apkUrl = "https://github.com/medvedevanatalya/bis/releases/download/" +
+//                                        lastAppVersion + "/app-debug.apk";
+                                String apkUrl = "http://172.20.1.84:8787/update/app-debug.apk";
                                 //intent.setDataAndType(Uri.parse(apkUrl), "application/vnd.android.package-archive");
                                 intent.setData(Uri.parse(apkUrl));
 
@@ -685,7 +687,6 @@ public class MainActivity extends AppCompatActivity
                 alert.show();
             }
         });
-
     }
 }
 
