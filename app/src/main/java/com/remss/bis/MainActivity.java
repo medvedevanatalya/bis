@@ -1,50 +1,38 @@
 package com.remss.bis;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.DownloadManager;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.net.http.SslError;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.text.Html;
-import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
 import android.webkit.PermissionRequest;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,9 +40,6 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.FileProvider;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.Request;
@@ -63,20 +48,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.firebase.messaging.FirebaseMessaging;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import static com.remss.bis.ReceiverTimer.CHANNEL_ID;
 
@@ -140,15 +116,31 @@ public class MainActivity extends AppCompatActivity
         //SwipeRefreshLayout
         final SwipeRefreshLayout finalMySwipeRefreshLayout1;
         finalMySwipeRefreshLayout1 = findViewById(R.id.swiperefresh);
+        finalMySwipeRefreshLayout1.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                if ((myWebView.getScrollY() == 0) && (myWebView.getScrollX() == 0)) {
+                        Log.d("TAG", "onScrollChanged - y=0 - make swipe refresh active");
+                        finalMySwipeRefreshLayout1.setEnabled(true);
+                }else {
+                    finalMySwipeRefreshLayout1.setEnabled(false);
+                    Log.d("TAG", "onScrollChanged - y is not null - swipe refresh not active");
+                }
+            }
+        });
+
         finalMySwipeRefreshLayout1.setOnRefreshListener( new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                Log.d("TAG", "Swipe - refresh");
+                finalMySwipeRefreshLayout1.setRefreshing(false);
+
                 // This method performs the actual data-refresh operation.
                 // The method calls setRefreshing(false) when it's finished.
-//                myWebView.loadUrl(myWebView.getUrl());
                 myWebView.reload();
             }
         });
+
 
         mProgressBar = findViewById(R.id.pb);
 
@@ -183,6 +175,8 @@ public class MainActivity extends AppCompatActivity
         //возможность масштабирования страницы
         myWebView.getSettings().setBuiltInZoomControls(true);
         myWebView.getSettings().setSupportZoom(true);
+//        myWebView.getSettings().setDisplayZoomControls(false);
+
 
         myWebView.getSettings().setAllowContentAccess(true);
 
@@ -203,6 +197,19 @@ public class MainActivity extends AppCompatActivity
         createNotificationChannel();
         setAlarm(this);
     }
+
+    @Override
+    public boolean onTrackballEvent(MotionEvent event) {
+        int countPoint = event.getPointerCount();
+        return super.onTrackballEvent(event);
+    }
+
+//    public boolean onTou(View v, MotionEvent event)
+//    {
+//        int countPoint = event.getPointerCount();
+//
+//        return true;
+//    }
 
 
     private void createNotificationChannel()
@@ -433,7 +440,8 @@ public class MainActivity extends AppCompatActivity
                         "&pass=" + URLEncoder.encode(password(), "UTF-8") +
                         "&type=" + URLEncoder.encode("app", "UTF-8") +
                         "&manufacturer_model=" + URLEncoder.encode(manufacturer_model, "UTF-8") +
-                        "&androidID=" + URLEncoder.encode(androidID, "UTF-8");
+                        "&androidID=" + URLEncoder.encode(androidID, "UTF-8") +
+                        "&lastVersion=" + URLEncoder.encode(BuildConfig.VERSION_NAME, "UTF-8");
             }
             catch (UnsupportedEncodingException e)
             {
@@ -520,7 +528,7 @@ public class MainActivity extends AppCompatActivity
 
 
     // реализация класса который контролирует переход по ссылкам
-    private class MyWebViewClient extends WebViewClient
+    private abstract class MyWebViewClient extends WebViewClient
     {
 
 //        @SuppressLint("SetJavaScriptEnabled")
@@ -549,6 +557,17 @@ public class MainActivity extends AppCompatActivity
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url)
         {
+//            if(url.equals("http://172.20.1.84:8787/update/app-debug.apk"))
+//            if(url.contains(".apk/"))
+            if(url.endsWith(".apk"))
+            {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(intent);
+
+                Log.d("TAG", "shouldOverrideUrlLoading: return true");
+                return true;
+            }
+
             if(url.startsWith("http:") || url.startsWith("https:"))
             {
                 view.loadUrl(url);
