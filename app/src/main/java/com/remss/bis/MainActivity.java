@@ -34,7 +34,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -76,7 +75,7 @@ public class MainActivity extends AppCompatActivity
     public static String androidID = "";
     public static String manufacturer_model = "";
 
-    TextView text_login_url;
+//    TextView text_login_url;
 
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -119,13 +118,35 @@ public class MainActivity extends AppCompatActivity
         finalMySwipeRefreshLayout1.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
-                if ((myWebView.getScrollY() == 0) && (myWebView.getScrollX() == 0)) {
-                        Log.d("TAG", "onScrollChanged - y=0 - make swipe refresh active");
-                        finalMySwipeRefreshLayout1.setEnabled(true);
-                }else {
-                    finalMySwipeRefreshLayout1.setEnabled(false);
-                    Log.d("TAG", "onScrollChanged - y is not null - swipe refresh not active");
-                }
+
+                myWebView.setOnTouchListener(new View.OnTouchListener() {
+                    @SuppressLint("ClickableViewAccessibility")
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        // если верх страницы
+                        Log.d("TAG", "event.getY()" + event.getY());
+
+                        if((myWebView.getScrollY() == 0) && (event.getY() <= 600))
+                        {
+                            // получение числа одновременных касаний
+                            switch (event.getPointerCount()) {
+                            case 1:
+                                //если одно то разрешить
+                                finalMySwipeRefreshLayout1.setEnabled(true);
+                                break;
+                            case 2:
+                                //если два то блокировать
+                                finalMySwipeRefreshLayout1.setEnabled(false);
+                                break;
+                            }
+                        }
+                        // иначе блокировать обновление
+                        else {
+                            finalMySwipeRefreshLayout1.setEnabled(false);
+                        }
+                        return false;
+                    }
+                });
             }
         });
 
@@ -141,6 +162,8 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        // отключить вложенную прокрутку на веб-просмотр
+        myWebView.setNestedScrollingEnabled(false);
 
         mProgressBar = findViewById(R.id.pb);
 
@@ -152,7 +175,7 @@ public class MainActivity extends AppCompatActivity
             }
             @Override
             public void onPageFinished(WebView view, String url) {
-                finalMySwipeRefreshLayout1.setRefreshing(false);
+//                finalMySwipeRefreshLayout1.setRefreshing(false);
                 mProgressBar.setVisibility(View.GONE);
             }
         });
@@ -175,7 +198,7 @@ public class MainActivity extends AppCompatActivity
         //возможность масштабирования страницы
         myWebView.getSettings().setBuiltInZoomControls(true);
         myWebView.getSettings().setSupportZoom(true);
-//        myWebView.getSettings().setDisplayZoomControls(false);
+        myWebView.getSettings().setDisplayZoomControls(false);
 
 
         myWebView.getSettings().setAllowContentAccess(true);
@@ -197,19 +220,6 @@ public class MainActivity extends AppCompatActivity
         createNotificationChannel();
         setAlarm(this);
     }
-
-    @Override
-    public boolean onTrackballEvent(MotionEvent event) {
-        int countPoint = event.getPointerCount();
-        return super.onTrackballEvent(event);
-    }
-
-//    public boolean onTou(View v, MotionEvent event)
-//    {
-//        int countPoint = event.getPointerCount();
-//
-//        return true;
-//    }
 
 
     private void createNotificationChannel()
@@ -333,7 +343,7 @@ public class MainActivity extends AppCompatActivity
                 return true;
             case R.id.action_home :
                 loadWebView();
-                return  true;
+                return true;
             case R.id.action_refresh :
                 Log.d("TAG", "URL MyWebView: " + myWebView.getUrl());
                 myWebView.reload();
@@ -405,7 +415,7 @@ public class MainActivity extends AppCompatActivity
                 {
                     Log.d("TAG", "onResume: start to load page");
                     loadWebView();
-                };
+                }
             }
         }
         else { }
@@ -448,23 +458,23 @@ public class MainActivity extends AppCompatActivity
                 e.printStackTrace();
             }
 
-        text_login_url = findViewById(R.id.login_url);
-        if(username().isEmpty() && !uri().isEmpty())
-        {
-            text_login_url.setText("\tВы не ввели имя пользователя! \n\tАдресс страницы: " + uri());
-        }
-        else if(!username().isEmpty() && uri().isEmpty())
-        {
-            text_login_url.setText("\tИмя пользователя: " + username() + "\n\tВы не ввели адресс страницы!");
-        }
-        else if(!username().isEmpty() && !uri().isEmpty())
-        {
-            text_login_url.setText("\tИмя пользователя: " + username() + "\n\tАдресс страницы: " + uri());
-        }
-        else if(username().isEmpty() && uri().isEmpty())
-        {
-            text_login_url.setText("\tВы не ввели имя пользователя! \n\tВы не ввели адресс страницы!");
-        }
+//        text_login_url = findViewById(R.id.login_url);
+//        if(username().isEmpty() && !uri().isEmpty())
+//        {
+//            text_login_url.setText("\tВы не ввели имя пользователя! \n\tАдресс страницы: " + uri());
+//        }
+//        else if(!username().isEmpty() && uri().isEmpty())
+//        {
+//            text_login_url.setText("\tИмя пользователя: " + username() + "\n\tВы не ввели адресс страницы!");
+//        }
+//        else if(!username().isEmpty() && !uri().isEmpty())
+//        {
+//            text_login_url.setText("\tИмя пользователя: " + username() + "\n\tАдресс страницы: " + uri());
+//        }
+//        else if(username().isEmpty() && uri().isEmpty())
+//        {
+//            text_login_url.setText("\tВы не ввели имя пользователя! \n\tВы не ввели адресс страницы!");
+//        }
 
             // загрузка страницы в браузер через post запрос
             curLoadedPage = uri();

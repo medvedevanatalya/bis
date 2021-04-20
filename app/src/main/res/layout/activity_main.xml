@@ -37,22 +37,22 @@
         <WebView
             android:id="@+id/webView"
             android:layout_width="match_parent"
-            android:layout_height="700dp"
+            android:layout_height="match_parent"
             tools:layout_editor_absoluteX="352dp"
             tools:layout_editor_absoluteY="712dp" />
     </RelativeLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_alignParentBottom="true">
+<!--    <RelativeLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="30dp"-->
+<!--        android:layout_alignParentBottom="true">-->
 
-        <TextView
-            android:id="@+id/login_url"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="" />
-    </RelativeLayout>
+<!--        <TextView-->
+<!--            android:id="@+id/login_url"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:text="" />-->
+<!--    </RelativeLayout>-->
 
 </RelativeLayout>
