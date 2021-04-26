@@ -50,6 +50,9 @@ import com.android.volley.toolbox.Volley;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,9 +78,6 @@ public class MainActivity extends AppCompatActivity
     public static String androidID = "";
     public static String manufacturer_model = "";
 
-//    TextView text_login_url;
-
-
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @SuppressLint({"SetTextI18n", "HardwareIds", "NewApi", "LocalSuppress", "SetJavaScriptEnabled", "AddJavascriptInterface"})
     @Override
@@ -86,13 +86,9 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-//        Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.logo);// set drawable icon
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ActionBar actionBarLogo = getSupportActionBar();
         actionBarLogo.setHomeAsUpIndicator(R.drawable.logo1);
         actionBarLogo.setDisplayHomeAsUpEnabled(true);
-
 
         androidID = Settings.System.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         manufacturer_model = Build.MANUFACTURER + " " + Build.MODEL;
@@ -155,9 +151,8 @@ public class MainActivity extends AppCompatActivity
             public void onRefresh() {
                 Log.d("TAG", "Swipe - refresh");
                 finalMySwipeRefreshLayout1.setRefreshing(false);
-
-                // This method performs the actual data-refresh operation.
-                // The method calls setRefreshing(false) when it's finished.
+                // Этот метод выполняет фактическую операцию обновления данных.
+                // По завершении метод вызывает setRefreshing (false).
                 myWebView.reload();
             }
         });
@@ -170,7 +165,7 @@ public class MainActivity extends AppCompatActivity
         myWebView.setWebViewClient(new MyWebViewClient(){
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                // Visible the progressbar
+                // Виден индикатор выполнения
                 mProgressBar.setVisibility(View.VISIBLE);
             }
             @Override
@@ -183,10 +178,10 @@ public class MainActivity extends AppCompatActivity
         // MyWebChromeClient в реализации класса можно реагировать на вызов из JS функции ALERT()
         myWebView.setWebChromeClient(new MyWebChromeClient(){
             public void onProgressChanged(WebView view, int newProgress){
-                // Update the progress bar with page loading progress
+                // Обновляем индикатор выполнения с учетом прогресса загрузки страницы
                 mProgressBar.setProgress(newProgress);
                 if(newProgress == 100){
-                    // Hide the progressbar
+                    // Скрыть индикатор выполнения
                     mProgressBar.setVisibility(View.GONE);
                 }
             }
@@ -204,7 +199,6 @@ public class MainActivity extends AppCompatActivity
         myWebView.getSettings().setAllowContentAccess(true);
 
         // установить интерфейс взаимодействия с JavaScript загружаемой web страницы
-//        myWebView.addJavascriptInterface(new WebAppInterface(this),"Android");
         myWebView.addJavascriptInterface(mWebAppInterface,"Android");
 
         myWebView.getSettings().setPluginState(WebSettings.PluginState.ON);
@@ -342,6 +336,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
                 return true;
             case R.id.action_home :
+                Log.d("TAG", "URL MyWebViewSERVER: " + uri());
                 loadWebView();
                 return true;
             case R.id.action_refresh :
@@ -436,14 +431,16 @@ public class MainActivity extends AppCompatActivity
 
 
     @SuppressLint({"SetTextI18n", "HardwareIds"})
-    public void loadWebView()
-    {
+    public void loadWebView() {
         Log.d("TAG", "loadWebView: current loaded page: " + curLoadedPage);
 
-        if( curLoadedPage.isEmpty() || curLoadedPage.equals(uri()) )
+//        if( curLoadedPage.isEmpty() || curLoadedPage.equals(uri()) )
+        if(!uri().isEmpty())
         {
             // подготовка параметров для отправки post запроса
             String postParams = "";
+
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat fmt = new SimpleDateFormat("yyyy.MM.dd");
             try
             {
                 postParams = "user=" + URLEncoder.encode(username(), "UTF-8") +
@@ -451,30 +448,13 @@ public class MainActivity extends AppCompatActivity
                         "&type=" + URLEncoder.encode("app", "UTF-8") +
                         "&manufacturer_model=" + URLEncoder.encode(manufacturer_model, "UTF-8") +
                         "&androidID=" + URLEncoder.encode(androidID, "UTF-8") +
-                        "&lastVersion=" + URLEncoder.encode(BuildConfig.VERSION_NAME, "UTF-8");
+                        "&lastVersion=" + URLEncoder.encode(BuildConfig.VERSION_NAME, "UTF-8") +
+                        "&buildDate=" + fmt.format(BuildConfig.buildTime);
             }
             catch (UnsupportedEncodingException e)
             {
                 e.printStackTrace();
             }
-
-//        text_login_url = findViewById(R.id.login_url);
-//        if(username().isEmpty() && !uri().isEmpty())
-//        {
-//            text_login_url.setText("\tВы не ввели имя пользователя! \n\tАдресс страницы: " + uri());
-//        }
-//        else if(!username().isEmpty() && uri().isEmpty())
-//        {
-//            text_login_url.setText("\tИмя пользователя: " + username() + "\n\tВы не ввели адресс страницы!");
-//        }
-//        else if(!username().isEmpty() && !uri().isEmpty())
-//        {
-//            text_login_url.setText("\tИмя пользователя: " + username() + "\n\tАдресс страницы: " + uri());
-//        }
-//        else if(username().isEmpty() && uri().isEmpty())
-//        {
-//            text_login_url.setText("\tВы не ввели имя пользователя! \n\tВы не ввели адресс страницы!");
-//        }
 
             // загрузка страницы в браузер через post запрос
             curLoadedPage = uri();
@@ -484,9 +464,9 @@ public class MainActivity extends AppCompatActivity
             // сбрасываем признак отображения внутреннего диалога страницы
             isShowDialog = "false";
         }
-        else {
-//            myWebView.reload();
-        }
+//        else {
+////            myWebView.reload();
+//        }
     }
 
 
@@ -679,26 +659,59 @@ public class MainActivity extends AppCompatActivity
 
 
     // на обновление версии приложения
-    public void Update(final Double lastAppVersion)
+    public void Update(final String lastAppVersion)
     {
+        //обновление приложения сравнивая текущую и актуальную версии
+//        runOnUiThread(new Runnable()
+//        {
+//            @Override
+//            public void run()
+//            {
+//                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+//                builder.setMessage("Доступно обновление приложения Brooke до новой версии " +
+//                        lastAppVersion + " - желаете обновиться? " +
+//                        "Если вы согласны - вы будете перенаправлены к скачиванию APK файла," +
+//                        " который затем нужно будет открыть.")
+//                        .setCancelable(true)
+//                        .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int id) {
+//                                Intent intent = new Intent(Intent.ACTION_VIEW);
+////                                String apkUrl = "http://172.20.1.84:8787/update/app-debug.apk";
+//                                String apkUrl = uri() + "update/app-debug.apk";
+//                                intent.setData(Uri.parse(apkUrl));
+//
+//                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                                startActivity(intent);
+//                                dialog.dismiss();
+//                            }
+//                        })
+//                        .setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int id) {
+//                                SettingsManager.put(MainActivity.this, "LastIgnoredUpdateVersion", lastAppVersion.toString());
+//                                dialog.cancel();
+//                            }
+//                        });
+//                AlertDialog alert = builder.create();
+//                alert.show();
+//            }
+//        });
+
+
+        //обновление приложения сравнивая дату текущей сборки приложения и последней даты изменения файла apk на сервере
         runOnUiThread(new Runnable()
         {
             @Override
             public void run()
             {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setMessage("Доступно обновление приложения Brooke до версии " +
-                        lastAppVersion + " - желаете обновиться? " +
+                builder.setMessage("Доступно обновление приложения Brooke до новой версии - желаете обновиться? " +
                         "Если вы согласны - вы будете перенаправлены к скачиванию APK файла," +
                         " который затем нужно будет открыть.")
                         .setCancelable(true)
                         .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 Intent intent = new Intent(Intent.ACTION_VIEW);
-//                                        String apkUrl = "https://github.com/medvedevanatalya/bis/releases/download/" +
-//                                        lastAppVersion + "/app-debug.apk";
-                                String apkUrl = "http://172.20.1.84:8787/update/app-debug.apk";
-                                //intent.setDataAndType(Uri.parse(apkUrl), "application/vnd.android.package-archive");
+                                String apkUrl = uri() + "update/app-debug.apk";
                                 intent.setData(Uri.parse(apkUrl));
 
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -708,7 +721,7 @@ public class MainActivity extends AppCompatActivity
                         })
                         .setNegativeButton("Нет", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                SettingsManager.put(MainActivity.this, "LastIgnoredUpdateVersion", lastAppVersion.toString());
+                                SettingsManager.put(MainActivity.this, "LastIgnoredUpdateVersion", lastAppVersion);
                                 dialog.cancel();
                             }
                         });
@@ -718,6 +731,3 @@ public class MainActivity extends AppCompatActivity
         });
     }
 }
-
-
-
