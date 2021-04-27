@@ -195,7 +195,6 @@ public class MainActivity extends AppCompatActivity
         myWebView.getSettings().setSupportZoom(true);
         myWebView.getSettings().setDisplayZoomControls(false);
 
-
         myWebView.getSettings().setAllowContentAccess(true);
 
         // установить интерфейс взаимодействия с JavaScript загружаемой web страницы
@@ -711,7 +710,7 @@ public class MainActivity extends AppCompatActivity
                         .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                                String apkUrl = uri() + "update/app-debug.apk";
+                                String apkUrl = "http://brooke.cherrynet.kz:8787/update/app-debug.apk";
                                 intent.setData(Uri.parse(apkUrl));
 
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

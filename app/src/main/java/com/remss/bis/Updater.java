@@ -34,11 +34,7 @@ class Updater extends AsyncTask<MainActivity, Void, Void>
     @Override
     protected Void doInBackground(MainActivity... activity)
     {
-        try {
-            checkUpdates(activity[0]);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        checkUpdates(activity[0]);
         return null;
     }
 
@@ -111,11 +107,11 @@ class Updater extends AsyncTask<MainActivity, Void, Void>
         try
         {
             // Создайте URL-адрес желаемой страницы
-            URL url = new URL(MainActivity.uri() + "update/app-debug.apk");
+            URL url = new URL("http://brooke.cherrynet.kz:8787/update/app-debug.apk");
 
-            HttpURLConnection conn=(HttpURLConnection) url.openConnection();
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setConnectTimeout(60000); // timing out in a minute
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
             String releaseLastDate = simpleDateFormat.format(conn.getLastModified());
             Log.d("Brooke", "Дата последнего изменения .apk файла: " + releaseLastDate);
             return releaseLastDate;
@@ -128,7 +124,7 @@ class Updater extends AsyncTask<MainActivity, Void, Void>
         return null;
     }
 
-    void checkUpdates(final MainActivity activity) throws ParseException {
+    void checkUpdates(final MainActivity activity) {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat fmt = new SimpleDateFormat("yyyy.MM.dd");
 
         final String releaseLastDate = getLastAppVersion();
@@ -136,18 +132,37 @@ class Updater extends AsyncTask<MainActivity, Void, Void>
 
         Calendar calendarReleaseLastDate = Calendar.getInstance();
         Calendar calendarBuildDate = Calendar.getInstance();
-        calendarReleaseLastDate.setTime(fmt.parse(releaseLastDate));
-        calendarBuildDate.setTime(fmt.parse(buildDate));
 
-        if (calendarReleaseLastDate == null)
-        {
-            return;
+        Date dateReleaseLastDate = null;
+        try {
+            dateReleaseLastDate = fmt.parse(releaseLastDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+        Date dateBuildDate = null;
+        try {
+            dateBuildDate = fmt.parse(buildDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        assert dateReleaseLastDate != null;
+        calendarReleaseLastDate.setTime(dateReleaseLastDate);
+        assert dateBuildDate != null;
+        calendarBuildDate.setTime(dateBuildDate);
 
         // если дата последнего релиза .apk файла на сервере совпадает с датой сборки приложения либо меньше ее, то ничего не делать
         if (calendarReleaseLastDate.compareTo(calendarBuildDate) <= 0) {
             Log.d("Brooke", "Версия приложения актуальна, обновление не требуется.");
             return;
+        }
+
+
+        String li = SettingsManager.get(activity, "LastIgnoredUpdateVersion");
+        if (li != null)
+        {
+            if (li.compareTo(releaseLastDate) >= 0)
+                return;
         }
 
         //иначе если дата последнего релиза больше даты сборки, то вызывать метод обновлнения
